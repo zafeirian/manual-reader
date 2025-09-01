@@ -130,6 +130,5 @@ async def ask(req: QueryRequest):
 
     response_text = await llm.ainvoke(prompt)
     sources = [{"source": chunk.source, "page": chunk.page} for chunk in chunks]
-    
-    return QueryResponse(response=response_text, sources=sources)
 
+    return QueryResponse(response=response_text.content, sources=sources)
