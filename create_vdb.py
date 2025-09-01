@@ -26,17 +26,17 @@ def split_into_chunks(documents: list[Document]):
     chunks = text_splitter.split_documents(documents)
     return chunks
 
-def vdb(chunks: list[Document], embedding_function, persist_directory):
+def creation_of_chroma(chunks: list[Document], embedding_function, persist_directory):
     if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)
 
     db = Chroma.from_documents(documents=chunks, 
-                              embedding_function=embedding_function, 
+                              embedding=embedding_function, 
                               persist_directory=persist_directory
                               )
     print(f"Saved {len(chunks)} chunks into a Vector DB.")
 
-def generate_vdb(documents: list[Document], embedding_function, persist_directory):
+def generate_vdb(documents, embedding_function, persist_directory):
     docs = load_documents(documents)
     chunks = split_into_chunks(docs)
     vdb(chunks, embedding_function, persist_directory)
