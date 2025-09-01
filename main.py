@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
-from typing import Annotated
+from typing import Annotated, Optional, List
 from pydantic import BaseModel
 from create_vdb import split_into_chunks, creation_of_chroma
 from dotenv import load_dotenv
@@ -41,6 +41,22 @@ async def lifespan(app: FastAPI):
         shutil.rmtree(CHROMA_PATH, ignore_errors=True)
 
 
+class QueryRequest(BaseModel):
+    query: str
+    k: int = 3
+
+class Chunk(BaseModel):
+    content: str
+    score: Optional[float] = None
+    source: Optional[str] = None
+    page: Optional[int] = None
+
+class QueryResponse(BaseModel):
+    response: str
+    sources: list[dict]
+
+
+
 app = FastAPI(title='Manual Reader', lifespan=lifespan)
 
 
@@ -73,4 +89,7 @@ async def upload(files: list[UploadFile] = File(...)):
     return {"Vector Database created": True}
     
 
+@app.post("/ask")
+async def ask():
+    
 
