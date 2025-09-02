@@ -1,5 +1,4 @@
 from langchain_community.document_loaders import PyPDFLoader
-import re
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_chroma import Chroma
