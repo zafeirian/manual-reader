@@ -1,16 +1,17 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
-from typing import Annotated, Optional, List
+from typing import Optional
 from pydantic import BaseModel
 from create_vdb import split_into_chunks, creation_of_chroma
 from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_chroma import Chroma
+from langchain.prompts import ChatPromptTemplate
 import shutil, tempfile, os, re
 from pathlib import Path
 from contextlib import asynccontextmanager
 from uuid import uuid4
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_chroma import Chroma
-from langchain.prompts import ChatPromptTemplate
+
 
 
 CHROMA_PATH='chroma'
@@ -78,9 +79,10 @@ class QueryResponse(BaseModel):
 app = FastAPI(title='Manual Reader', lifespan=lifespan)
 
 
-@app.get("/health")
-def health():
-    return {"ok": True}
+@app.get("/")
+def root():
+    return {"/upload": "Upload your PDF(s) here.",
+            "/ask": "Ask questions about your files here."}
 
 @app.post("/upload")
 async def upload(files: list[UploadFile] = File(...)):
